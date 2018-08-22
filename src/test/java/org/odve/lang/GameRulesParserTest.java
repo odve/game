@@ -4,6 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.odve.model.GameRules;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URL;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -20,8 +24,15 @@ public class GameRulesParserTest {
     }
 
     @Test
-    public void createGame() {
-        GameRules rules = parser.parse();
+    public void createGame() throws Exception {
+        URL url = Thread.currentThread().getContextClassLoader().getResource("chess.txt");
+        assertThat(url).isNotNull();
+
+        GameRules rules;
+        try (InputStream chess = new FileInputStream(url.getPath())) {
+            rules = parser.parse(chess);
+        }
+
         assertThat(rules.getName()).isEqualTo("chess");
     }
 }
