@@ -7,9 +7,7 @@ import lombok.Value;
  */
 
 @Value
-public class Game {
+public class Player {
 
-    private final long id;
-    private final GameRules rules;
-
+    private final String role;
 }

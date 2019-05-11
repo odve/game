@@ -3,11 +3,13 @@ package org.odve.lang;
 import org.junit.Before;
 import org.junit.Test;
 import org.odve.model.GameRules;
+import org.odve.model.Player;
+import org.odve.utils.FileUtils;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.net.URL;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -25,14 +27,15 @@ public class GameRulesParserTest {
 
     @Test
     public void createGame() throws Exception {
-        URL url = Thread.currentThread().getContextClassLoader().getResource("chess.txt");
-        assertThat(url).isNotNull();
+        String path = FileUtils.getPath("chess.txt");
 
         GameRules rules;
-        try (InputStream chess = new FileInputStream(url.getPath())) {
+        try (InputStream chess = new FileInputStream(path)) {
             rules = parser.parse(chess);
         }
 
         assertThat(rules.getName()).isEqualTo("chess");
+        assertThat(rules.getPlayers())
+                .isEqualTo(asList(new Player("white"), new Player("black")));
     }
 }
