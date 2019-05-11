@@ -1,0 +1,122 @@
+options {
+    STATIC = false;
+}
+
+PARSER_BEGIN(Parser)
+package org.odve.parser;
+
+import org.odve.model.*;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.io.InputStream;
+
+public class Parser {
+    public Parser() {
+    }
+
+    public GameRules parse(InputStream io) throws ParseException, TokenMgrError {
+        Parser parser = new Parser(io);
+        return parser.rules();
+    }
+}
+PARSER_END(Parser)
+
+SKIP:  { " " | "\t" | "\n" | "\r"}
+
+SKIP :
+{
+  "/*" : WithinComment
+}
+
+<WithinComment> SKIP :
+{
+  "*/" : DEFAULT
+}
+
+<WithinComment> MORE :
+{
+  <~[]>
+}
+
+TOKEN: {
+    <GAME : "game"> |
+    <PLAYERS : "players">}
+
+TOKEN: {<EOL : ";">}
+
+TOKEN: {
+        <OPENBRACE: "{">
+    |   <CLOSEBRACE: "}">
+    |   <OPENBRACKET: "[">
+    |   <CLOSEBRACKET: "]">
+    |   <COLON: ":">
+    |   <DOT: ".">
+    |   <COMMA: ",">
+    |   <PLUS: "+">
+    |   <MINUS: "-">
+}
+
+TOKEN: {
+    <NUMBER: (<MINUS>)? ( <DIGITS> ) > |
+    <DIGITS: ( <DIGIT> )+ > |
+    <ID: <LETTER> (<LETTER> | <DIGIT> | "_")*> |
+    <#LETTER: ["A"-"Z", "a"-"z"]> |
+    <#DIGIT: ["0"-"9"]>
+}
+
+GameRules rules(): {
+    GameRules.GameRulesBuilder builder = GameRules.builder();
+    String name;
+    List<Player> players;
+} {
+    name = name() <EOL> {builder.name(name);}
+    players = players() <EOL> {builder.players(players);}
+    <EOF> {return builder.build();}
+}
+
+String id(): {
+    Token value;
+}
+{
+    value = <ID>
+    {return value.image;}
+}
+
+List<String> list(): {
+    List<String> values = new ArrayList<String>();
+    String value;
+}
+{
+    value = id() {values.add(value);}
+    (<COMMA> value = id() {values.add(value);})*
+    {return values;}
+}
+
+Integer num(): {
+    Token value;
+}
+{
+    value = <ID>
+    {return Integer.valueOf(value.image);}
+}
+
+String name(): {
+    String value;
+} {
+    <GAME> value = id()
+    {return value;}
+}
+
+List<Player> players(): {
+    List<String> values = new ArrayList<String>();
+    List<Player> result = new ArrayList<Player>();
+} {
+    <PLAYERS> values = list()
+    {
+        for (String v : values) {
+            result.add(new Player(v));
+        }
+        return result;
+    }
+}
