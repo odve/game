@@ -5,11 +5,14 @@ options {
 PARSER_BEGIN(Parser)
 package org.odve.parser;
 
+import org.odve.lang.libraries.order.Order;
 import org.odve.model.*;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.io.InputStream;
+
+import static java.util.Collections.emptyList;
 
 public class Parser {
     public Parser() {
@@ -21,6 +24,8 @@ public class Parser {
     }
 }
 PARSER_END(Parser)
+
+// -- Tokens --
 
 SKIP:  { " " | "\t" | "\n" | "\r"}
 
@@ -41,20 +46,24 @@ SKIP :
 
 TOKEN: {
     <GAME : "game"> |
-    <PLAYERS : "players">}
+    <PLAYERS : "players"> |
+    <ORDER : "order">
+}
 
 TOKEN: {<EOL : ";">}
 
 TOKEN: {
-        <OPENBRACE: "{">
-    |   <CLOSEBRACE: "}">
-    |   <OPENBRACKET: "[">
-    |   <CLOSEBRACKET: "]">
-    |   <COLON: ":">
-    |   <DOT: ".">
-    |   <COMMA: ",">
-    |   <PLUS: "+">
-    |   <MINUS: "-">
+    <LPAREN: "("> |
+    <RPAREN: ")"> |
+    <LBRACE: "{"> |
+    <RBRACE: "}"> |
+    <LBRACKET: "["> |
+    <RBRACKET: "]"> |
+    <COLON: ":"> |
+    <DOT: "."> |
+    <COMMA: ","> |
+    <PLUS: "+"> |
+    <MINUS: "-">
 }
 
 TOKEN: {
@@ -65,22 +74,20 @@ TOKEN: {
     <#DIGIT: ["0"-"9"]>
 }
 
-GameRules rules(): {
-    GameRules.GameRulesBuilder builder = GameRules.builder();
-    String name;
-    List<Player> players;
-} {
-    name = name() <EOL> {builder.name(name);}
-    players = players() <EOL> {builder.players(players);}
-    <EOF> {return builder.build();}
-}
+// -- Types --
 
 String id(): {
     Token value;
 }
 {
-    value = <ID>
-    {return value.image;}
+    value = <ID> {return value.image;}
+}
+
+Integer num(): {
+    Token value;
+}
+{
+    value = <NUMBER> {return Integer.valueOf(value.image);}
 }
 
 List<String> list(): {
@@ -93,30 +100,51 @@ List<String> list(): {
     {return values;}
 }
 
-Integer num(): {
-    Token value;
+List<String> params(): {
+    List<String> values = emptyList();
 }
 {
-    value = <ID>
-    {return Integer.valueOf(value.image);}
+    <LPAREN> (values = list())? <RPAREN> {return values;}
 }
 
-String name(): {
-    String value;
+// -- Rules --
+
+GameRules rules(): {
+    GameRules.GameRulesBuilder builder = GameRules.builder();
 } {
-    <GAME> value = id()
-    {return value;}
+    name(builder) <EOL>
+    players(builder) <EOL>
+    order(builder) <EOL>
+
+    <EOF> {return builder.build();}
 }
 
-List<Player> players(): {
+void name(GameRules.GameRulesBuilder builder): {
+    String name;
+} {
+    <GAME> name = id() {builder.name(name);}
+}
+
+void players(GameRules.GameRulesBuilder builder): {
     List<String> values = new ArrayList<String>();
-    List<Player> result = new ArrayList<Player>();
 } {
     <PLAYERS> values = list()
     {
+        List<Player> players = new ArrayList<Player>();
         for (String v : values) {
-            result.add(new Player(v));
+            players.add(new Player(v));
         }
-        return result;
+        builder.players(players);
+    }
+}
+
+void order(GameRules.GameRulesBuilder builder) : {
+    String orderName;
+    List<String> params;
+}
+{
+    <ORDER> orderName = id() params = params()
+    {
+        builder.order(Order.createOrder(orderName, params));
     }
 }
