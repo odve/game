@@ -34,17 +34,16 @@ public class GameRulesParser {
     public GameRules parse(InputStream rules) {
         log.debug("rules parsing started");
 
-        GameRules result;
+        RulesBuilder builder = new RulesBuilderImpl();
+
         try {
-            result = parser.parse(rules);
+            parser.parse(rules, builder);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
 
         log.debug("rules parsing finished");
 
-        return result;
+        return builder.build();
     }
-
-    //TODO: !important move all parser.jj logic to separate class
 }
