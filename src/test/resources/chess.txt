@@ -1,3 +1,5 @@
 game chess;
 
 players white, black;
+
+order RoundRobin(white, black);

@@ -37,5 +37,6 @@ public class GameRulesParserTest {
         assertThat(rules.getName()).isEqualTo("chess");
         assertThat(rules.getPlayers())
                 .isEqualTo(asList(new Player("white"), new Player("black")));
+        assertThat(rules.getOrder().getActivePlayer()).isEqualTo("white");
     }
 }

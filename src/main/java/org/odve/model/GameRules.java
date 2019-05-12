@@ -3,6 +3,7 @@ package org.odve.model;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import org.odve.lang.libraries.order.Order;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public class GameRules {
     private final String name;
 
     private final List<Player> players;
+
+    private final Order order;
 }
