@@ -52,7 +52,8 @@ SKIP : {
 TOKEN: {
     <GAME : "game"> |
     <PLAYERS : "players"> |
-    <ORDER : "order">
+    <ORDER : "order"> |
+    <BOARD : "board">
 }
 
 TOKEN: {
@@ -86,7 +87,8 @@ TOKEN: {
 String id(): {
     Token value;
 } {
-    value = <ID> { return value.image; }
+    value = <ID> { return value.image; } |
+    value = <NUMBER> { return value.image; }
 }
 
 Integer num(): {
@@ -117,6 +119,7 @@ void rules(): {} {
     name() <EOL>
     players() <EOL>
     order() <EOL>
+    board() <EOL>
 
     <EOF>
 }
@@ -138,4 +141,11 @@ void order() : {
     List<String> params;
 } {
     <ORDER> orderName = id() params = params() { builder.order(orderName, params); }
+}
+
+void board() : {
+    String boardType;
+    List<String> params;
+} {
+    <BOARD> boardType = id() params = params() { builder.board(boardType, params); }
 }
