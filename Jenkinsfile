@@ -1,10 +1,14 @@
 pipeline {
-    agent {
+    /*agent {
         docker {
             image 'maven:3-alpine'
             args '-v /root/.m2:/root/.m2'
         }
-    }
+    }*/
+    agent any
+        tools {
+            maven 'M3'
+          }
     stages {
         stage('Build') {
             steps {
@@ -13,28 +17,3 @@ pipeline {
         }
     }
 }
-
-/*
-pipeline {
-    agent any
-    tools {
-        maven 'M3'
-      }
-    stages {
-        stage ('Initialize') {
-            steps {
-                sh '''
-                    mvn --version
-                    echo "PATH = ${PATH}"
-                    echo "M2_HOME = ${M2_HOME}"
-                '''
-            }
-        }
-        stage('Build') {
-            steps {
-                sh 'mvn clean javacc:javacc package'
-            }
-        }
-    }
-}
-*/
