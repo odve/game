@@ -10,7 +10,9 @@ pipeline {
             when {
                 branch 'master'
             }
-            sh 'mvn versions:set -DremoveSnapshot'
+            steps {
+                sh 'mvn versions:set -DremoveSnapshot'
+            }
         }
 
         stage('Build') {
@@ -23,8 +25,10 @@ pipeline {
             when {
                 branch 'master'
             }
-            sh 'docker build -t odve/jar-runner .'
-            sh 'docker run -p 8080:80 odve/jar-runner'
+            steps {
+                sh 'docker build -t odve/jar-runner .'
+                sh 'docker run -p 8080:80 odve/jar-runner'
+            }
         }
     }
 }
