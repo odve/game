@@ -8,6 +8,9 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+                if(env.BRANCH_NAME == 'master') {
+                    sh 'mvn versions:set -DremoveSnapshot'
+                }
                 sh 'mvn clean javacc:javacc package'
             }
         }
