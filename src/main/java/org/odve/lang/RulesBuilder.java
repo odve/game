@@ -17,4 +17,6 @@ public interface RulesBuilder {
     void players(List<String> playerNames);
 
     void order(String orderName, List<String> params);
+
+    void board(String boardType, List<String> params);
 }
