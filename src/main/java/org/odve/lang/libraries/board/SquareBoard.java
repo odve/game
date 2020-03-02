@@ -1,6 +1,6 @@
 package org.odve.lang.libraries.board;
 
-import com.sun.tools.javac.util.Pair;
+import org.odve.util.Pair;
 
 /**
  * @author evdokimov evgenii
@@ -24,7 +24,7 @@ public class SquareBoard {
         }
     }
 
-    public Pair<Integer, Integer> getSize() {
+    public Pair getSize() {
         return Pair.of(x, y);
     }
 

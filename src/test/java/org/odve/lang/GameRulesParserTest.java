@@ -1,11 +1,11 @@
 package org.odve.lang;
 
-import com.sun.tools.javac.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
 import org.odve.lang.libraries.board.SquareBoard;
 import org.odve.model.GameRules;
 import org.odve.model.Player;
+import org.odve.util.Pair;
 import org.odve.utils.FileUtils;
 
 import java.io.FileInputStream;

@@ -1,11 +1,11 @@
-package org.odve.model;
+package org.odve.util;
 
-import lombok.Data;
+import lombok.Value;
 
-@Data
+@Value
 public class Pair {
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
 
     public static Pair of(int x, int y) {
         return new Pair(x, y);
