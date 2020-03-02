@@ -6,3 +6,9 @@ players white, black;
  * RoundRobin order is one turn per player strategy
 */
 order RoundRobin(white, black);
+
+/*
+ * Square cells board
+*/
+
+board SquareBoard(8, 8, ChessCell);
