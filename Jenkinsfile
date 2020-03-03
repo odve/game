@@ -26,8 +26,9 @@ pipeline {
                 branch 'master'
             }
             steps {
-                sh 'docker build -t odve/jar-runner .'
-                sh 'docker run -p 8080:80 odve/jar-runner'
+                sh 'pwd'
+                //sh 'docker build -t odve/jar-runner .'
+                //sh 'docker run -p 8080:80 odve/jar-runner'
             }
         }
     }
