@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage("Fix version") {
             when {
-                branch 'master'
+                branch 'master11'
             }
             steps {
                 sh 'mvn versions:set -DremoveSnapshot'
@@ -27,6 +27,7 @@ pipeline {
             }
             steps {
                 sh 'pwd'
+                sh 'ls -al'
                 //sh 'docker build -t odve/jar-runner .'
                 //sh 'docker run -p 8080:80 odve/jar-runner'
             }
