@@ -21,14 +21,18 @@ pipeline {
             }
         }
 
+        stage('Test') {
+            steps {
+                sh 'ls -al'
+            }
+        }
+
         stage("Deploy") {
             when {
                 branch 'master'
             }
             steps {
-                sh 'pwd'
-                sh 'ls -al'
-                //sh 'docker build -t odve/jar-runner .'
+                sh 'docker build -t odve/jar-runner .'
                 //sh 'docker run -p 8080:80 odve/jar-runner'
             }
         }
